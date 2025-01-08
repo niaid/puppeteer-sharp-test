@@ -11,7 +11,37 @@ on:
   schedule:
     - cron: "27 4 * * 5"
 
+env:
+  DOTNET_VERSION: '6.0.x' # The .NET SDK version to use
+
 jobs:
+
+  build:
+
+    name: build-${{ matrix.browser }}/${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        browser: [FIREFOX,CHROME]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Install dependencies
+      run: |
+        dotnet restore lib/PuppeteerSharp.sln
+        dotnet dev-certs https -ep lib/PuppeteerSharp.TestServer/testCert.cer
+        sudo openssl x509 -inform der -in lib/PuppeteerSharp.TestServer/testCert.cer -out /usr/local/share/ca-certificates/testCert.crt -outform pem
+        sudo update-ca-certificates
+    - name: Build
+      run: dotnet build lib/PuppeteerSharp.sln
+
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
@@ -56,16 +86,16 @@ jobs:
       #   echo "Run, Build Application using script"
       #   ./location_of_script_within_repo/buildscript.sh
 
-      - name: Install dependencies
-        run: |
-          dotnet restore lib/PuppeteerSharp.sln
-          dotnet dev-certs https -ep lib/PuppeteerSharp.TestServer/testCert.cer
-          sudo openssl x509 -inform der -in lib/PuppeteerSharp.TestServer/testCert.cer -out /usr/local/share/ca-certificates/testCert.crt -outform pem
-          sudo update-ca-certificates
-      - name: Build
-        run: |
-          echo "Run, Build Application using script"
-          dotnet build lib/PuppeteerSharp.sln
+      # - name: Install dependencies
+      #   run: |
+      #     dotnet restore lib/PuppeteerSharp.sln
+      #     dotnet dev-certs https -ep lib/PuppeteerSharp.TestServer/testCert.cer
+      #     sudo openssl x509 -inform der -in lib/PuppeteerSharp.TestServer/testCert.cer -out /usr/local/share/ca-certificates/testCert.crt -outform pem
+      #     sudo update-ca-certificates
+      # - name: Build
+      #   run: |
+      #     echo "Run, Build Application using script"
+      #     dotnet build lib/PuppeteerSharp.sln
 
       # - run: |
       #     echo 'If you are using a "manual" build mode for one or more of the' \
