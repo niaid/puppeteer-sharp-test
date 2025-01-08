@@ -59,8 +59,8 @@ jobs:
       with:
         name: csharp_scanning
         path: |
-          csharp.sarif
-          csharp.zip
+          results/csharp.sarif
+          /home/runner/work/_temp/codeql_databases/csharp.zip
 
 
   # analyze:
