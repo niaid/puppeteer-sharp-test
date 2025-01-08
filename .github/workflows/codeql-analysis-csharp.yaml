@@ -27,14 +27,14 @@ jobs:
         browser: [FIREFOX,CHROME]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
+      uses: github/codeql-action/init@v3
       with:
         languages: "csharp"
         queries: security-extended # security-and-quality
@@ -52,7 +52,7 @@ jobs:
       run: dotnet build lib/PuppeteerSharp.sln
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
+      uses: github/codeql-action/analyze@v3
 
 
   # analyze:
