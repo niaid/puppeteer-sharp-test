@@ -59,7 +59,7 @@ jobs:
       with:
         name: csharp_scanning
         path: |
-          results/csharp.sarif
+          /home/runner/work/puppeteer-sharp-test/results/csharp.sarif
           /home/runner/work/_temp/codeql_databases/csharp.zip
 
 
