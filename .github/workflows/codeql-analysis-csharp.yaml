@@ -56,7 +56,14 @@ jobs:
       #   echo "Run, Build Application using script"
       #   ./location_of_script_within_repo/buildscript.sh
 
-      - run: |
+      - name: Install dependencies
+        run: |
+          dotnet restore lib/PuppeteerSharp.sln
+          dotnet dev-certs https -ep lib/PuppeteerSharp.TestServer/testCert.cer
+          sudo openssl x509 -inform der -in lib/PuppeteerSharp.TestServer/testCert.cer -out /usr/local/share/ca-certificates/testCert.crt -outform pem
+          sudo update-ca-certificates
+      - name: Build
+        run: |
           echo "Run, Build Application using script"
           dotnet build lib/PuppeteerSharp.sln
 
